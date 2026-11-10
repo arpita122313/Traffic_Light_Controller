@@ -1,59 +1,70 @@
 @echo off
+setlocal enabledelayedexpansion
 REM =============================================================================
-REM Automated GitHub Repository Publisher
-REM Project: Four-Way Traffic Light Controller
+REM Project       : Four-Way Traffic Light Controller
+REM File          : push_to_github.bat
+REM Description   : 1-Click push to https://github.com/arpita122313/Traffic_Light_Controller
 REM =============================================================================
 
-echo ===========================================================================
-echo   PUBLISH TRAFFIC LIGHT CONTROLLER TO GITHUB
-echo ===========================================================================
+echo ==================================================================
+echo   Pushing Traffic Light Controller to GitHub: arpita122313
+echo ==================================================================
+
+set "GIT_EXE=C:\Users\HP\AppData\Local\Programs\Git\cmd\git.exe"
+if not exist "%GIT_EXE%" (
+    where git >nul 2>nul
+    if %ERRORLEVEL% equ 0 (
+        set "GIT_EXE=git"
+    ) else (
+        echo [ERROR] Git executable not found!
+        pause
+        exit /b 1
+    )
+)
+
+echo [*] Using Git: %GIT_EXE%
+
+"%GIT_EXE%" status >nul 2>nul
+if %ERRORLEVEL% neq 0 (
+    echo [*] Initializing Git repository...
+    "%GIT_EXE%" init
+    "%GIT_EXE%" branch -M main
+)
+
+echo [*] Staging all files...
+"%GIT_EXE%" add .
+
+echo [*] Committing changes...
+"%GIT_EXE%" commit -m "feat: complete four-way traffic light controller in Verilog HDL with 8-state Moore FSM, self-checking testbench, Vivado synthesis reports, and documentation" >nul 2>nul
+
+echo [*] Configuring remote origin...
+"%GIT_EXE%" remote remove origin >nul 2>nul
+"%GIT_EXE%" remote add origin https://github.com/arpita122313/Traffic_Light_Controller.git
+
 echo.
-
-where git >nul 2>nul
-if %errorlevel% neq 0 (
-    echo [ERROR] Git is not installed or not in system PATH.
-    echo Please install Git from https://git-scm.com/ and try again.
-    pause
-    exit /b
-)
-
-if not exist .git (
-    echo [INFO] Initializing new Git repository...
-    git init
-    git branch -M main
-)
-
-echo [INFO] Staging all project files...
-git add .
-
-echo [INFO] Committing project files...
-git commit -m "feat: complete four-way traffic light controller in Verilog HDL with FSM, self-checking testbench, Vivado synthesis, and documentation"
-
+echo [*] Pushing branch 'main' to https://github.com/arpita122313/Traffic_Light_Controller.git ...
+echo (If prompted, please authorize in the GitHub login window)
 echo.
-echo ===========================================================================
-echo Please enter your GitHub Repository Remote URL
-echo Example: https://github.com/your-username/Traffic_Light_Controller.git
-echo ===========================================================================
-set /p REPO_URL="Repository URL: "
+"%GIT_EXE%" push -u origin main
 
-if "%REPO_URL%"=="" (
-    echo [WARNING] No URL provided. Git commit created locally.
-    pause
-    exit /b
-)
-
-git remote remove origin >nul 2>nul
-git remote add origin %REPO_URL%
-
-echo [INFO] Pushing code to GitHub main branch...
-git push -u origin main
-
-if %errorlevel% equ 0 (
+if %ERRORLEVEL% equ 0 (
     echo.
-    echo [SUCCESS] Project successfully published to %REPO_URL%!
+    echo ==================================================================
+    echo   SUCCESS! Your project is now live on GitHub:
+    echo   https://github.com/arpita122313/Traffic_Light_Controller
+    echo ==================================================================
 ) else (
     echo.
-    echo [ERROR] Push failed. Please verify your repository URL and credentials.
+    echo ==================================================================
+    echo   [ACTION REQUIRED]
+    echo   If you received "repository not found", please ensure you have
+    echo   created the empty repository on GitHub first:
+    echo   ?? https://github.com/new
+    echo      Repository name: Traffic_Light_Controller
+    echo      Visibility     : Public
+    echo.
+    echo   Then simply re-run this script!
+    echo ==================================================================
 )
 
 pause
