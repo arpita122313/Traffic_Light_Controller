@@ -1,0 +1,19 @@
+# Vivado Project & Synthesis Artifacts
+*.jou
+*.log
+*.str
+*.dmp
+*.pb
+*.rpt
+.Xil/
+vivado_sim_proj/
+xsim.dir/
+.cache/
+hd_visual/
+synth_1/
+sim_1/
+
+# OS specific files
+Thumbs.db
+.DS_Store
+Desktop.ini
